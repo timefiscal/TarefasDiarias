@@ -2650,6 +2650,14 @@ body.dark-mode .bottom-nav {
             <span>Reset Diárias</span>
           </div>
         </div>
+        <!-- Limpar cache local — visível pra todo mundo. Não apaga nada no
+             Sheets nem no servidor: só remove o snapshot que o navegador
+             guarda em localStorage (fiscalFullCache) pra abrir mais rápido,
+             e recarrega a página buscando tudo direto do GAS/Sheets. -->
+        <div class="nav-item" onclick="limparCacheLocal()" style="color:var(--sky);border-color:transparent">
+          <div class="nav-icon" style="background:rgba(96,165,250,.12);color:var(--sky)">🗑️</div>
+          <span>Limpar Cache Local</span>
+        </div>
       </div>
 
       <div style="height:10px"></div>
@@ -10169,6 +10177,23 @@ function loadLocalData(){
     }
     // dailyLog já é restaurado pelo backup próprio na inicialização
   }catch(e){ console.warn('[loadLocalData] Erro:', e.message); }
+}
+
+// ✅ NOVO — Botão "Limpar Cache Local" (menu Configurações)
+// Resolve o caso "tela mostrando dado velho": o cache que fica desatualizado
+// aqui é o localStorage do NAVEGADOR (fiscalFullCache, usado só pra abrir a
+// tela mais rápido — ver loadLocalData acima), não algo que exista dentro do
+// Google Sheets. Por isso não tem como "zerar pelo Sheets": não é lá que
+// esse cache mora. Este botão remove o snapshot local e recarrega a página,
+// forçando loadFromSheets() a buscar tudo de novo do servidor (que por sua
+// vez só cacheia por 30s no CacheService do GAS — ver invalidateCache() no
+// Code.gs, que já roda sozinho a cada save).
+function limparCacheLocal(){
+  if(!confirm('Isso vai limpar o cache local deste navegador e recarregar os dados direto do servidor. Nada é apagado do Sheets. Continuar?')) return;
+  try{
+    localStorage.removeItem('fiscalFullCache');
+  }catch(e){ console.warn('[Limpar Cache] Erro ao remover fiscalFullCache:', e.message); }
+  location.reload();
 }
 
 // Save previous month lojas snapshot (run once per month)
