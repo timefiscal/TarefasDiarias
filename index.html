@@ -10179,20 +10179,31 @@ function loadLocalData(){
   }catch(e){ console.warn('[loadLocalData] Erro:', e.message); }
 }
 
-// ✅ NOVO — Botão "Limpar Cache Local" (menu Configurações)
+// ✅ CORRIGIDO — Botão "Limpar Cache Local" (menu Configurações)
 // Resolve o caso "tela mostrando dado velho": o cache que fica desatualizado
-// aqui é o localStorage do NAVEGADOR (fiscalFullCache, usado só pra abrir a
-// tela mais rápido — ver loadLocalData acima), não algo que exista dentro do
-// Google Sheets. Por isso não tem como "zerar pelo Sheets": não é lá que
-// esse cache mora. Este botão remove o snapshot local e recarrega a página,
-// forçando loadFromSheets() a buscar tudo de novo do servidor (que por sua
-// vez só cacheia por 30s no CacheService do GAS — ver invalidateCache() no
+// aqui é o localStorage do NAVEGADOR, não algo que exista dentro do Google
+// Sheets. Por isso não tem como "zerar pelo Sheets": não é lá que esse cache
+// mora.
+//
+// Causa raiz do bug anterior: o app guarda dados espalhados em mais de 20
+// chaves diferentes no localStorage (fiscalTeamMembers, fiscalObrigacoesDB,
+// fiscalCompetencia, fiscalTeamNotes, fiscalTrocaHistory, plantaoScale,
+// birthdays, customColors, etc.) além de fiscalFullCache. A maioria delas é
+// lida direto para as variáveis do app já na inicialização (loadLocalData e
+// outros pontos de boot), independente do fiscalFullCache. Removendo só a
+// fiscalFullCache, todo o resto continuava trazendo os dados antigos de
+// volta na hora do reload — por isso parecia que "não limpava nada".
+//
+// Fix: localStorage.clear() remove geral (todas as chaves do domínio),
+// que é o comportamento certo pra um botão de "começar do zero" e força
+// loadFromSheets() a buscar tudo de novo do servidor (que por sua vez só
+// cacheia por 30s no CacheService do GAS — ver invalidateCache() no
 // Code.gs, que já roda sozinho a cada save).
 function limparCacheLocal(){
-  if(!confirm('Isso vai limpar o cache local deste navegador e recarregar os dados direto do servidor. Nada é apagado do Sheets. Continuar?')) return;
+  if(!confirm('Isso vai limpar TODO o cache local deste navegador (inclusive preferências salvas localmente) e recarregar os dados direto do servidor. Nada é apagado do Sheets. Continuar?')) return;
   try{
-    localStorage.removeItem('fiscalFullCache');
-  }catch(e){ console.warn('[Limpar Cache] Erro ao remover fiscalFullCache:', e.message); }
+    localStorage.clear();
+  }catch(e){ console.warn('[Limpar Cache] Erro ao limpar localStorage:', e.message); }
   location.reload();
 }
 
