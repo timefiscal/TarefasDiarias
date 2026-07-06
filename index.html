@@ -12261,108 +12261,15 @@ function _confirmarRemocao(nome){
 // obrigacoesDB: { "YYYY-MM": [...obrigacoes] }
 let obrigacoesDB = safeJSONParse(localStorage.getItem('fiscalObrigacoesDB'), {});
 
-// ─── Obrigações fixas por mês — cada mês é independente ─────────────────────
-// Editar aqui só atualiza usuários novos ou reset. Para forçar atualização
-// em todos os PCs, incrementar o PATCH_KEY abaixo.
-const OBRIG_PATCH_KEY = 'fiscalObrigPatch_v7';
-if(!localStorage.getItem(OBRIG_PATCH_KEY)){
-  // Fevereiro/2026
-  obrigacoesDB['2026-02'] = [
-    {id:1, nome:'Consulta Fiscal todas as empresas do grupo (CND)',          responsavel:'Fernanda',             dia:5,  tipo:'Fiscal'},
-    {id:2, nome:'Manifestação Nfe recebidas - Supermercado (todas as lojas)',responsavel:'Nathayane',            dia:5,  tipo:'Fiscal'},
-    {id:3, nome:'Manifestação Nfe recebidas - Postos',                       responsavel:'Fernanda',             dia:5,  tipo:'Fiscal'},
-    {id:4, nome:'EFD Reinf - Supermercado',                                  responsavel:'Kamila',               dia:10, tipo:'Fiscal'},
-    {id:5, nome:'EFD Reinf - Restaurante/JJ/Posto',                          responsavel:'Fernanda',             dia:10, tipo:'Fiscal'},
-    {id:6, nome:'Consulta Fiscal fornecedores Postos',                       responsavel:'Fernanda',             dia:10, tipo:'Fiscal'},
-    {id:7, nome:'NF Senff',                                                  responsavel:'Nathayane',            dia:15, tipo:'Fiscal'},
-    {id:8, nome:'Ressarcimento ICMS ST Postos',                              responsavel:'Jane / Jaqueline',     dia:15, tipo:'Fiscal'},
-    {id:9, nome:'DARFS PIS/COFINS Supermercado',                             responsavel:'Jane',                 dia:20, tipo:'Fiscal'},
-    {id:10,nome:'Sped Contribuições Supermercado',                           responsavel:'Jane',                 dia:20, tipo:'Fiscal'},
-    {id:11,nome:'DARFS PIS/COFINS Posto',                                    responsavel:'Jane',                 dia:20, tipo:'Fiscal'},
-    {id:12,nome:'Sped Contribuições Posto',                                  responsavel:'Jane',                 dia:20, tipo:'Fiscal'},
-    {id:13,nome:'DAS Ingrid Nutrição',                                       responsavel:'Priscila',             dia:20, tipo:'Fiscal'},
-    {id:14,nome:'DIRBI',                                                     responsavel:'Jaqueline',            dia:20, tipo:'Fiscal'},
-    {id:15,nome:'CIAP Supermercado',                                         responsavel:'Jaqueline',            dia:20, tipo:'Fiscal'},
-    {id:16,nome:'CIAP Posto',                                                responsavel:'Jane',                 dia:20, tipo:'Fiscal'},
-    {id:17,nome:'DAS Restaurantes',                                          responsavel:'Junto ao fechamento',  dia:25, tipo:'Fiscal'},
-    {id:18,nome:'Conciliação',                                               responsavel:'Todos',                dia:28, tipo:'Geral'},
-    {id:19,nome:'Planilha produtor Rural - ICMS contabilidade',              responsavel:'—',                    dia:28, tipo:'Fiscal'},
-    {id:20,nome:'MIT',                                                       responsavel:'Jane',                 dia:30, tipo:'Fiscal'},
-    {id:21,nome:'DEFIS',                                                     responsavel:'Jaqueline',            dia:30, tipo:'Fiscal'},
-    {id:22,nome:'RAPP',                                                      responsavel:'Jaqueline',            dia:30, tipo:'Fiscal'},
-  ];
-  // Março/2026
-  obrigacoesDB['2026-03'] = [
-    {id:1, nome:'Consulta Fiscal todas as empresas do grupo (CND)',          responsavel:'Kamila',               dia:5,  tipo:'Fiscal'},
-    {id:2, nome:'Manifestação Nfe recebidas - Supermercado (todas as lojas)',responsavel:'Nathayane',            dia:5,  tipo:'Fiscal'},
-    {id:3, nome:'Manifestação Nfe recebidas - Postos',                       responsavel:'Fernanda',             dia:5,  tipo:'Fiscal'},
-    {id:4, nome:'EFD Reinf - Supermercado',                                  responsavel:'Fernanda',             dia:10, tipo:'Fiscal'},
-    {id:5, nome:'EFD Reinf - Restaurante/JJ/Posto',                          responsavel:'Jane',                 dia:10, tipo:'Fiscal'},
-    {id:6, nome:'Consulta Fiscal fornecedores Postos',                       responsavel:'Kamila',               dia:10, tipo:'Fiscal'},
-    {id:7, nome:'NF Senff',                                                  responsavel:'Nathayane',            dia:15, tipo:'Fiscal'},
-    {id:8, nome:'Ressarcimento ICMS ST Postos',                              responsavel:'Jane',                 dia:15, tipo:'Fiscal'},
-    {id:9, nome:'DARFS PIS/COFINS Supermercado',                             responsavel:'Jaqueline',            dia:20, tipo:'Fiscal'},
-    {id:10,nome:'Sped Contribuições Supermercado',                           responsavel:'Jaqueline',            dia:20, tipo:'Fiscal'},
-    {id:11,nome:'DARFS PIS/COFINS Posto',                                    responsavel:'Jane',                 dia:20, tipo:'Fiscal'},
-    {id:12,nome:'Sped Contribuições Posto',                                  responsavel:'Jane',                 dia:20, tipo:'Fiscal'},
-    {id:13,nome:'DAS Ingrid Nutrição',                                       responsavel:'Kamila',               dia:20, tipo:'Fiscal'},
-    {id:14,nome:'DIRBI',                                                     responsavel:'Priscila',             dia:20, tipo:'Fiscal'},
-    {id:15,nome:'CIAP Supermercado',                                         responsavel:'Jaqueline',            dia:20, tipo:'Fiscal'},
-    {id:16,nome:'CIAP Posto',                                                responsavel:'Jane',                 dia:20, tipo:'Fiscal'},
-    {id:17,nome:'DAS Restaurantes',                                          responsavel:'Junto ao fechamento',  dia:25, tipo:'Fiscal'},
-    {id:18,nome:'Conciliação',                                               responsavel:'Todos',                dia:28, tipo:'Geral'},
-    {id:19,nome:'Planilha produtor Rural - ICMS contabilidade',              responsavel:'—',                    dia:28, tipo:'Fiscal'},
-    {id:20,nome:'MIT',                                                       responsavel:'Jaqueline',            dia:30, tipo:'Fiscal'},
-    {id:21,nome:'DEFIS',                                                     responsavel:'Jaqueline',            dia:30, tipo:'Fiscal'},
-    {id:22,nome:'RAPP',                                                      responsavel:'Jaqueline',            dia:30, tipo:'Fiscal'},
-  ];
-
-  // Julho/2026
-  obrigacoesDB['2026-07'] = [
-    {id:1,  nome:'REINF - Supermercado',                                        responsavel:'Priscila',                 dia:3,  tipo:'Fiscal'},
-    {id:2,  nome:'REINF - Posto',                                               responsavel:'Priscila',                 dia:3,  tipo:'Fiscal'},
-    {id:3,  nome:'REINF - Restaurante / Holding / JJ',                          responsavel:'Priscila',                 dia:3,  tipo:'Fiscal'},
-    {id:4,  nome:'Aprovação escritas fiscais Entrada/Saída - Supermercado (1ª Semana)', responsavel:'Priscila',        dia:3,  tipo:'Fiscal'},
-    {id:40, nome:'FERIADO',                                                      responsavel:'—',                        dia:9,  tipo:'Geral'},
-    {id:5,  nome:'NF Senff',                                                    responsavel:'Nathayane',                dia:1,  tipo:'Fiscal'},
-    {id:6,  nome:'CIAP - Postos',                                               responsavel:'Jane',                     dia:1,  tipo:'Fiscal'},
-    {id:7,  nome:'CIAP - Supermercado',                                         responsavel:'Jaqueline',                dia:1,  tipo:'Fiscal'},
-    {id:8,  nome:'Planilha ICMS Produtor Rural para contabilidade',             responsavel:'—',                        dia:1,  tipo:'Fiscal'},
-    {id:9,  nome:'Planilha ICMS GÁS PRODUÇÃO para contabilidade',              responsavel:'—',                        dia:1,  tipo:'Fiscal'},
-    {id:10, nome:'ISS Todas as empresas',                                       responsavel:'Fernanda',                 dia:6,  tipo:'Fiscal'},
-    {id:11, nome:'DAS - Simples Nacional Fechamento - Bella Massa',             responsavel:'Jane',                     dia:6,  tipo:'Fiscal'},
-    {id:12, nome:'DAS - Simples Nacional Fechamento - Lig Lig',                 responsavel:'Jane',                     dia:6,  tipo:'Fiscal'},
-    {id:13, nome:'Fechamento Fiscal - Supermercados',                           responsavel:'Nathayane',                dia:8,  tipo:'Fiscal'},
-    {id:14, nome:'Fechamento Fiscal - Postos',                                  responsavel:'Jane',                     dia:8,  tipo:'Fiscal'},
-    {id:15, nome:'Fechamento Fiscal - JJ',                                      responsavel:'Jane',                     dia:8,  tipo:'Fiscal'},
-    {id:16, nome:'Validação SPED Fiscal',                                       responsavel:'Jaqueline',                dia:8,  tipo:'Fiscal'},
-    {id:17, nome:'DARE ICMS - Postos',                                          responsavel:'Jane',                     dia:8,  tipo:'Fiscal'},
-    {id:18, nome:'DARE ICMS - Supermercado',                                    responsavel:'Nathayane',                dia:8,  tipo:'Fiscal'},
-    {id:19, nome:'Aprovação escritas fiscais Entrada/Saída - Supermercado (2ª Semana)', responsavel:'Priscila',        dia:10, tipo:'Fiscal'},
-    {id:20, nome:'Conciliação Fiscal',                                          responsavel:'Todos',                    dia:13, tipo:'Geral'},
-    {id:21, nome:'Ressarcimento ICMS ST Postos',                                responsavel:'Jane',                     dia:15, tipo:'Fiscal'},
-    {id:22, nome:'DARF PIS/COFINS - MIT - Postos',                              responsavel:'Jane',                     dia:15, tipo:'Fiscal'},
-    {id:23, nome:'DARF PIS/COFINS - MIT - Supermercados',                       responsavel:'Jaqueline',                dia:15, tipo:'Fiscal'},
-    {id:24, nome:'Envio SPED ICMS - Supermercados',                             responsavel:'Nathayane',                dia:16, tipo:'Fiscal'},
-    {id:25, nome:'Envio SPED ICMS - Postos',                                    responsavel:'Jane',                     dia:16, tipo:'Fiscal'},
-    {id:26, nome:'Envio SPED ICMS - JJ',                                        responsavel:'Jane',                     dia:16, tipo:'Fiscal'},
-    {id:27, nome:'VAF (Ourinhos)',                                               responsavel:'Jane',                     dia:16, tipo:'Fiscal'},
-    {id:28, nome:'Aprovação escrita fiscal - Supermercado (3ª Semana)',          responsavel:'Priscila',                dia:17, tipo:'Fiscal'},
-    {id:29, nome:'Envio SPED Contribuições - Supermercado',                     responsavel:'Jaqueline',                dia:20, tipo:'Fiscal'},
-    {id:30, nome:'Envio SPED Contribuições - Posto',                            responsavel:'Jane',                     dia:20, tipo:'Fiscal'},
-    {id:31, nome:'DIRBI',                                                        responsavel:'Jaqueline',                dia:21, tipo:'Fiscal'},
-    {id:32, nome:'Verificar CND Fornecedores dos Postos',                       responsavel:'Fernanda',                 dia:23, tipo:'Fiscal'},
-    {id:33, nome:'DeSTDA Simples Nacional',                                     responsavel:'Priscila',                 dia:24, tipo:'Fiscal'},
-    {id:34, nome:'Aprovação escrita fiscal - Supermercado (4ª Semana)',          responsavel:'Priscila',                dia:24, tipo:'Fiscal'},
-    {id:35, nome:'Planilha comparativo Swap de fontes - Energia Elétrica',      responsavel:'Fernanda',                 dia:27, tipo:'Geral'},
-    {id:36, nome:'Consultar todas as empresas do grupo (CND, Ecac, Dec, Posto fiscal)', responsavel:'Fernanda',        dia:29, tipo:'Fiscal'},
-    {id:37, nome:'Verificar transferências pendentes de entrada',                responsavel:'Nathayane',                dia:30, tipo:'Fiscal'},
-    {id:38, nome:'Verificar Notas Pendentes Manifesto',                         responsavel:'Fernanda',                 dia:31, tipo:'Fiscal'},
-    {id:39, nome:'Aprovação escrita fiscal - Supermercado (5ª Semana)',          responsavel:'Priscila',                dia:31, tipo:'Fiscal'},
-  ];
-  localStorage.setItem('fiscalObrigacoesDB', JSON.stringify(obrigacoesDB));
-  localStorage.setItem(OBRIG_PATCH_KEY, '1');
-}
+// ✅ REMOVIDO (2026-07-05): bloco fixo de obrigações (fev/mar/jul-2026)
+// hardcoded direto no código, controlado pela chave OBRIG_PATCH_KEY no
+// localStorage. Removido porque: (1) essas obrigações já foram confirmadas
+// salvas no Sheets (obrigacoesDB, via mergeTopLevelKeys no Code.gs) — não
+// precisam mais existir no código; (2) a chave OBRIG_PATCH_KEY era apagada
+// toda vez que 'Limpar Cache Local' rodava localStorage.clear(), fazendo
+// esse bloco reinjetar os dados fixos e resincronizá-los para o Sheets —
+// undoing exclusões/edições reais feitas pela equipe. Agora obrigacoesDB
+// vem 100% do Sheets (merge por mês, editável, sem fantasma de dados).
 
 // obrigacoes é um getter/setter que opera na competência atual
 Object.defineProperty(window, 'obrigacoes', {
